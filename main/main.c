@@ -14,8 +14,17 @@
 #define PIN_NUM_MOSI GPIO_NUM_23
 #define PIN_NUM_CLK  GPIO_NUM_18
 #define PIN_NUM_CS   GPIO_NUM_5
-#define SPI_HOST   HSPI_HOST
+#define SPI_HOST   SPI3_HOST
 
+void spi_init(void);
+
+esp_err_t err;
+spi_device_handle_t spi;
+
+void app_main(void)
+{
+
+}
 
 void spi_init(void){
     spi_bus_config_t buscfg = {
@@ -30,9 +39,17 @@ void spi_init(void){
         .spics_io_num = PIN_NUM_CS,
         .queue_size = 7
     };
+    err = spi_bus_initialize(SPI_HOST, &buscfg, SPI_DMA_DISABLED);
+    if (err != ESP_OK) {
+        ESP_LOGE("SPI", "Failed to initialize SPI bus");
+        return;
+    }
+    err = spi_bus_add_device(SPI_HOST, &devcfg, &spi);
+    if (err != ESP_OK) {
+        ESP_LOGE("SPI", "Failed to add SPI device");
+        return;
+    }
 }
 
-void app_main(void)
-{
 
-}
+
