@@ -17,7 +17,7 @@
 #define SPI_HOST   SPI3_HOST
 
 void spi_init(void);
-void spi_write(uint8_t data, size_t len);
+void spi_write(uint8_t addr, uint8_t data);
 
 esp_err_t err;
 spi_device_handle_t spi;
@@ -57,13 +57,11 @@ void spi_write(uint8_t addr, uint8_t data){
         .tx_data = {addr, data},
         .length = 16
  };
- gpio_set_level(PIN_NUM_CS, 0);
  printf("Writing '0x%x' data at 0x%x\n", data, addr);
  err = spi_device_transmit(spi, &t);
  if (err != ESP_OK) {
      ESP_LOGE("SPI", "Failed to transmit SPI data");
  }
- gpio_set_level(PIN_NUM_CS, 1);
  vTaskDelay(100 / portTICK_PERIOD_MS);
  printf("Writing operation completed\n\n");
 }
