@@ -18,13 +18,21 @@
 
 void spi_init(void);
 void spi_write(uint8_t addr, uint8_t data);
+void spi_read(uint8_t addr,uint8_t *data);
 
 esp_err_t err;
 spi_device_handle_t spi;
+uint8_t nrfData;
 
 void app_main(void)
 {
-
+    spi_init();
+    while (1) {
+        spi_write(0x00, 0xAA);
+        spi_read(0x00, &nrfData);
+        printf("Read data: 0x%x\n", nrfData);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
 }
 
 void spi_init(void){
@@ -66,5 +74,17 @@ void spi_write(uint8_t addr, uint8_t data){
  printf("Writing operation completed\n\n");
 }
 
+void spi_read(uint8_t addr, uint8_t *data)
+{
+    spi_transaction_t t = {
+        .flags = SPI_TRANS_USE_TXDATA | SPI_TRANS_USE_RXDATA,
+        .length = 16,
+        .tx_data = {addr, 0x00}
+    };
 
-
+    err = spi_device_transmit(spi, &t);
+    if (err != ESP_OK) {
+         ESP_LOGE("SPI", "Failed to read SPI data");
+    }
+    *data = t.rx_data[1];
+}
