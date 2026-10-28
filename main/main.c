@@ -51,7 +51,7 @@ void spi_init(void){
     }
 }
 
-void spi_write(uint8_t addr, size_t data){
+void spi_write(uint8_t addr, uint8_t data){
     spi_transaction_t t = {
         .flags = SPI_TRANS_USE_TXDATA,
         .tx_data = {addr, data},
