@@ -38,7 +38,6 @@ void spi_init(void){
         .clock_speed_hz = 1 * 1000 * 1000,
         .mode = 0,
         .spics_io_num = PIN_NUM_CS,
-        .queue_size = 7
     };
     err = spi_bus_initialize(SPI_HOST, &buscfg, SPI_DMA_DISABLED);
     if (err != ESP_OK) {
